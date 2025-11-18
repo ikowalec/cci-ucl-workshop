@@ -7,8 +7,8 @@ from ase.visualize import view
 import numpy as np
 
 PARAMS = {'model': "small",
-          'dispersion': True,
-          'default_dtype': 'float64',
+          'dispersion': False,
+          'default_dtype': 'float32',
           'device': 'cpu'}
 
 calc =  mace_mp(**PARAMS)
@@ -53,6 +53,11 @@ def evaluate_structure(atoms, index, fix=["Ce", "O"]):
     opt.run(fmax=0.01)
 
     return atoms
+
+def get_mace_energy(atoms):
+    atoms.calc = calc
+    energy = atoms.get_potential_energy()
+    return energy
 
 """
 with connect("codebase/data/prescreened_structures.db") as db:

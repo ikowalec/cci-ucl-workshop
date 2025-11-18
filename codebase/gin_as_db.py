@@ -23,22 +23,3 @@ from ase.visualize import view
 from ase.io import read
 # view(read(f"{prescreened_file}@:"))
 
-# Calculate the energy of each structure and save in a database
-# for image in images:
-from mace.calculators import mace_mp
-from ase.optimize import BFGS
-
-PARAMS = {'model': "small",
-          'dispersion': True,
-          'default_dtype': 'float64',
-          'device': 'cpu'}
-
-def evaluate_structure(atoms, index):
-    atoms.calc = mace_mp(**PARAMS)
-    opt = BFGS(atoms, trajectory=f"{index}.traj", logfile=f"{index}.log")
-    opt.run(fmax=0.05)
-
-with connect("codebase/data/prescreened_structures.db") as db:
-    for row in db.select():
-        evaluate_structure(row.toatoms(), row.id)
-

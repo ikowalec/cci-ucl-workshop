@@ -34,3 +34,5 @@ if __name__ == "__main__":
 
     sim = soap_rematch_similarity_from_files(file1, file2, gamma=1.0, alpha=1.0)
     print("SOAP REMatch similarity:", sim)
+
+
