@@ -4,7 +4,7 @@ sys.path.append(rf"{os.getcwd()}")
 from codebase.io.klmc_parser import gin_files_to_db
 from codebase.rematch.prescreen import match_cluster_size
 
-# gin_files_to_db("codebase/data")
+gin_files_to_db("codebase/data")
 
 from ase.db import connect
 
