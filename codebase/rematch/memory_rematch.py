@@ -42,7 +42,7 @@ def filter_similar_structures(db_path,
     keep = []
     # Retrieve trimmed structures from database
     for row in connect(db_path).select():
-        if keep:
+        if not keep:
             # shaved atoms for speed - increase for better accuracy
             keep = shave_slab(row.toatoms(), threshold=3.0, fix=["Ce", "O"])[0]
 
