@@ -1,5 +1,10 @@
 import sys
 import os
+
+
+'''THIS SNIPPET OF CODE POPULATES A DATABASE WITH STRUCTURES
+FILTER TO ENSURE ONLY SINGLE CLUSTERS OF A GIVEN SIZE ARE INCLUDED'''
+
 sys.path.append(rf"{os.getcwd()}") # This is specific to the VSCode project to run code as modules
 from codebase.io.klmc_parser import gin_files_to_db
 from codebase.rematch.prescreen import match_cluster_size
@@ -19,7 +24,3 @@ if os.path.exists(prescreened_file):
                 if is_single_cluster:
                     db_out.write(row.toatoms())
            
-from ase.visualize import view
-from ase.io import read
-# view(read(f"{prescreened_file}@:"))
-
