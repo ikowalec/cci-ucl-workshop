@@ -94,8 +94,10 @@ def filter_similar_structures(db_path,
 
     return keep_indices
 
+"""
 keep_indices = filter_similar_structures("codebase/data/prescreened_structures.db")
 print(f"Keeping {len(keep_indices)} unique structures.")
+"""
 
 '''MAKE SURE TO SAVE THE KEEP INDICES SOMEWHERE SAFE
 with connect("codebase/data/prescreened_structures.db") as db:
