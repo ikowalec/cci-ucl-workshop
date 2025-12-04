@@ -5,12 +5,14 @@ import os
 from ase.visualize import view
 import numpy as np
 
-def __init_calc():
+path_to_default_model = r"C:\Users\c1528354\GitHub\ucl-cci\cci-ucl-workshop\codebase\run\mace-omat-0-medium.model"
+
+def __init_calc(model=path_to_default_model):
     # Lazy import to avoid slow startup times
     from mace.calculators import mace_mp
-    PARAMS = {'model': "small",
+    PARAMS = {'model': model,
             'dispersion': False,
-            'default_dtype': 'float32',
+            'default_dtype': 'float64',
             'device': 'cpu'}
 
     calc =  mace_mp(**PARAMS)
@@ -36,10 +38,9 @@ def shave_slab(atoms, threshold=3.0, fix=["Ce", "O"]):
     temp_atoms = atoms.copy()[keep_indices]
     return keep_indices, temp_atoms
 
-def evaluate_structure(atoms, index, fix=["Ce", "O"]):
+def evaluate_structure(atoms, calc, index, fix=["Ce", "O"]):
     ''' Preoptimise slab by shaving low-lying atoms, optimising, then restoring.
     Returns the optimised full slab.'''
-    calc = __init_calc()
     atoms.calc = calc
     keep_indices, temp_atoms = shave_slab(atoms, threshold=3.0, fix=fix)
     
@@ -47,7 +48,8 @@ def evaluate_structure(atoms, index, fix=["Ce", "O"]):
     c = FixAtoms(indices=[atom.index for atom in temp_atoms if atom.symbol in fix])
     temp_atoms.set_constraint(c)
     temp_atoms.calc = calc
-    opt = FIRE2(temp_atoms, trajectory=f"{calc.directory}/pre_{index}.traj", logfile=f"{calc.directory}/{index}.log")
+    opt = FIRE2(temp_atoms, logfile="-")
+    #opt = FIRE2(temp_atoms, trajectory=f"{calc.directory}/pre_{index}.traj", logfile=f"{calc.directory}/{index}.log")
     opt.run(fmax=0.05)
 
     # Restore positions to original atoms object
@@ -72,11 +74,3 @@ def get_mace_energy(atoms):
     energy = atoms.get_potential_energy()
     return energy
 
-"""
-with connect("codebase/data/prescreened_structures.db") as db:
-    for row in db.select():
-        
-        view(evaluate_structure(row.toatoms(), row.id))
-        if row.id == 1:
-            break
-"""

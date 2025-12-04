@@ -99,4 +99,9 @@ def get_unique_db(db_path, db_out_path, similarity_threshold=0.9999):
                 row = db.get(i + 1)  # ASE DB indices are 1-based
                 db_out.write(row.toatoms())
 
-get_unique_db(r"codebase\data\prescreened_structures.db", db_out_path="test_pruning.db")
+if __name__ == "__main__":
+    # Convenience entrypoint for ad-hoc runs; avoid running on import.
+    get_unique_db(
+        db_path=r"codebase\data\prescreened_structures.db",
+        db_out_path="test_pruning.db",
+    )
