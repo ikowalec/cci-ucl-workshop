@@ -31,7 +31,7 @@ def main():
     parser.add_argument(
         "--n-jobs",
         type=int,
-        default=4,
+        default=1,
         help="Number of CPUs to be used for similarity check. 1 is serial",
     )
 

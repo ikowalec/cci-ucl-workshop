@@ -37,17 +37,22 @@ def filter_similar_structures(db_path,
                               kernel_gamma=1.0, 
                               kernel_alpha=1.0, 
                               kernel_threshold=1e-6,
-                              n_jobs=1):
+                              n_jobs=1,
+                              backend="threading"):
     # First pass: load and normalize SOAP descriptors (O(n * descriptor_size) memory).
     soap_list = []
     keep_mask = None
+    atoms_list = []
     for row in connect(db_path).select():
         atoms = row.toatoms()
         if keep_mask is None:
             # shaved atoms for speed - increase for better accuracy
             # TODO: These species should not be hardcoded
             keep_mask = shave_slab(atoms, threshold=3.0, fix=["Ce", "Ti", "O"])[0]
-        soap_list.append(normalize(get_soap(atoms[keep_mask])))
+        atoms_list.append(atoms[keep_mask])
+    
+    soap_list = Parallel(n_jobs=n_jobs, backend=backend)(delayed(get_soap)(atoms) for atoms in atoms_list)
+    soap_list = Parallel(n_jobs=n_jobs, backend=backend)(delayed(normalize)(soap) for soap in soap_list)
     
     rematch_kernel = get_cached_rematch_kernel(
         gamma=kernel_gamma, alpha=kernel_alpha, threshold=kernel_threshold
@@ -68,7 +73,7 @@ def filter_similar_structures(db_path,
         current_soap = targets[0]
 
         # Parallelise similarity calculation over cpus
-        scores = Parallel(n_jobs=n_jobs, backend="threading")(
+        scores = Parallel(n_jobs=n_jobs, backend=backend)(
             delayed(rematch_kernel.create)([current_soap, soap])
             for soap in targets
         )
