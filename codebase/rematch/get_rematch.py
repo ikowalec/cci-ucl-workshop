@@ -16,6 +16,13 @@ def _get_kernel(gamma=1.0, alpha=1.0, threshold=1e-6):
         _kernel_cache[key] = kernel
     return kernel
 
+def get_cached_rematch_kernel(gamma=1.0, alpha=1.0, threshold=1e-6):
+    """
+    Public helper to fetch a cached REMatch kernel for the given hyperparameters.
+    This avoids constructing a new REMatchKernel every time a comparison is made.
+    """
+    return _get_kernel(gamma=gamma, alpha=alpha, threshold=threshold)
+
 def load_soap_from_csv(csv_path):
     """
     read SOAP (.csv), return np
@@ -57,4 +64,3 @@ if __name__ == "__main__":
 
     sim = soap_rematch_similarity_from_files(file1, file2, gamma=1.0, alpha=1.0)
     print("SOAP REMatch similarity:", sim)
-
