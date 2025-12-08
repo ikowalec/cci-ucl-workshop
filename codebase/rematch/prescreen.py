@@ -57,3 +57,20 @@ def match_cluster_size(size: int, slab, species: list):
     is_single_cluster = calculate_molecules(stripped_cluster, mult=1) == 1
 
     return is_single_cluster
+
+def split_by_1st_layer(db, species=["Au", "Cu"], layer_tolerance=0.5):
+    import numpy as np
+    atoms_list = [row.toatoms()[[atom.index for atom in row.toatoms() if atom.symbol in species]] for row in db.select()]
+    no_atoms = [len([atom.index for atom in atoms if atom.z < np.amin(atoms.positions[:,2]) + layer_tolerance]) for atoms in atoms_list]
+    
+    split = {n:[] for n in set(no_atoms)}
+    print(split)
+
+    for index, count in enumerate(no_atoms):
+        split[count].append(index+1)
+
+    # therefore we get {layer_atom_count:database_indices}
+
+    return split
+
+
