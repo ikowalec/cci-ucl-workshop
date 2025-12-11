@@ -1,12 +1,13 @@
 import sys
 import os
 sys.path.append(rf"{os.getcwd()}") # This is specific to the VSCode project to run code as modules
-
 from codebase.rematch.prescreen import match_cluster_size
+from codebase.run.evaluate import evaluate_structure, __init_calc
 from ase.db import connect
 
-initial_db = "adjacent.db"
-final_db = "adjacent_screened.db"
+#initial_db = "adjacent.db"
+#final_db = "adjacent_screened.db"
+
 """
 import time
 start = time.time()
@@ -20,7 +21,7 @@ with connect(initial_db) as idb:
 
 elapsed = time.time() - start
 print(f"Screening of 25001 structures took {elapsed} seconds.")
-"""
+
 
 '''Note that KLMC structures are already unique'''
 
@@ -35,4 +36,13 @@ with connect(db_optimised) as odb:
             atoms = row.toatoms()
             atoms = evaluate_structure(atoms, calc=calc, index=row.id, fix=["Ti", "O"])
             odb.write(atoms)
-    
+"""
+
+calc = __init_calc()
+with connect("unique_combined.db") as db:
+    with connect("unique_combined_result.db") as db2:
+        for row in db.select():
+            atoms = evaluate_structure(row.toatoms(), calc=calc, index=row.id)
+            db2.write(atoms)
+        
+

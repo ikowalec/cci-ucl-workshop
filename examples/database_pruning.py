@@ -14,18 +14,18 @@ def main():
     )
     parser.add_argument(
         "--db-path",
-        default="adjacent_screened.db", #"codebase/data/prescreened_structures.db",
+        default="unique.db", #"codebase/data/prescreened_structures.db",
         help="Input ASE database containing candidate structures.",
     )
     parser.add_argument(
         "--db-out-path",
-        default="unique.db",
+        default="unique_combined.db",
         help="Output ASE database that will store unique structures.",
     )
     parser.add_argument(
         "--similarity-threshold",
         type=float,
-        default=0.990,
+        default=0.9950,
         help="SOAP REMatch similarity threshold above which structures are treated as duplicates.",
     )
     parser.add_argument(
@@ -37,7 +37,7 @@ def main():
     parser.add_argument(
         "--slab-shave-distance",
         type=float,
-        default=-1,
+        default=3,
         help="Provide the z-coordinate for slab atoms to be retained. e.g. 3.0 is about 2 layers, -1 is cluster-only.",
     )
 
