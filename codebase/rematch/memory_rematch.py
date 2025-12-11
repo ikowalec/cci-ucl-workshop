@@ -22,7 +22,7 @@ def get_soap(atoms):
     if atoms.cell:
         periodic = True
     else:
-        False 
+        periodic = False 
     # Setting up the SOAP descriptor
     soap = SOAP(
         species=species,
