@@ -19,10 +19,14 @@ def get_soap(atoms):
     n_max = 8
     l_max = 6
 
+    if atoms.cell:
+        periodic = True
+    else:
+        False 
     # Setting up the SOAP descriptor
     soap = SOAP(
         species=species,
-        periodic=True,
+        periodic=periodic,
         r_cut=r_cut,
         n_max=n_max,
         l_max=l_max,
