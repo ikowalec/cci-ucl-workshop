@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(rf"{os.getcwd()}") # This is specific to the VSCode project to run code as modules
-from codebase.rematch.prescreen import match_cluster_size
+from codebase.rematch.prescreen import match_cluster_size, is_linked_periodically
 from codebase.run.evaluate import evaluate_structure, __init_calc
 from ase.db import connect
 
@@ -36,7 +36,7 @@ with connect(db_optimised) as odb:
             atoms = row.toatoms()
             atoms = evaluate_structure(atoms, calc=calc, index=row.id, fix=["Ti", "O"])
             odb.write(atoms)
-"""
+
 
 calc = __init_calc()
 with connect("unique_combined.db") as db:
@@ -44,5 +44,29 @@ with connect("unique_combined.db") as db:
         for row in db.select():
             atoms = evaluate_structure(row.toatoms(), calc=calc, index=row.id)
             db2.write(atoms)
+"""
+'''Following optimisation:'''
+with connect("scratch/CuTiO2_unique.db") as db:
+    rows = db.select()
+    from ase.visualize import view
+    rows = sorted(rows, key=lambda k: k.energy)
+    atoms_list = [row.toatoms() for row in rows]
+
+atoms_intact = []
+for atoms in atoms_list:
+    if match_cluster_size(size=atoms.symbols.count("Cu"), 
+                          slab=atoms, 
+                          species=["Cu"]):
         
+        atoms_intact.append(atoms)
+
+separate_clusters = []
+for atoms in atoms_intact:
+    metal_indices = [atom.index for atom in atoms if atom.symbol in ["Cu"]]
+    if not is_linked_periodically(13, atoms, species=["Cu"]):
+        separate_clusters.append(atoms)
+
+with connect("scratch/Cu13TiO2_optimised_screened.db") as db:
+    for atoms in separate_clusters:
+        db.write(atoms)
 

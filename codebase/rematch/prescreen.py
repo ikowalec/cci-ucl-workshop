@@ -52,11 +52,23 @@ def calculate_molecules(atoms,  mult=1, print_output=False):
 
 def match_cluster_size(size: int, slab, species: list):
 
+    # TODO: use the size also
     stripped_cluster = slab.copy()
     stripped_cluster = stripped_cluster[[atom.index for atom in slab if atom.symbol in species]]
-    is_single_cluster = calculate_molecules(stripped_cluster, mult=1) == 1
+    is_single_cluster = calculate_molecules(stripped_cluster, mult=0.9) == 1
 
     return is_single_cluster
+
+def is_linked_periodically(size: int, slab, species: list):
+    if not (slab.pbc).all():
+        return False
+    
+    stripped_cluster = slab.copy()
+    stripped_cluster = stripped_cluster[[atom.index for atom in slab if atom.symbol in species]]
+    stripped_cluster = stripped_cluster.repeat((2,2,2))
+    is_linked_periodically =  calculate_molecules(stripped_cluster, mult=1) !=  8
+
+    return is_linked_periodically
 
 def split_by_1st_layer(db, species=["Au", "Cu"], layer_tolerance=0.5):
     import numpy as np
@@ -72,5 +84,3 @@ def split_by_1st_layer(db, species=["Au", "Cu"], layer_tolerance=0.5):
     # therefore we get {layer_atom_count:database_indices}
 
     return split
-
-
