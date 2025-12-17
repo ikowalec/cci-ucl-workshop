@@ -51,7 +51,7 @@ def filter_similar_structures(db_path,
     with connect(db_path) as db:
         for row in db.select():
             atoms = row.toatoms()
-            if keep_mask is None:
+            if slab_shave_distance:
                 # shaved atoms for speed - increase for better accuracy
                 # TODO: These species should not be hardcoded
                 keep_mask = shave_slab(atoms, threshold=slab_shave_distance, fix=["Ce", "Ti", "O"])[0]
