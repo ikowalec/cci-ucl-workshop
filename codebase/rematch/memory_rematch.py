@@ -53,9 +53,11 @@ def filter_similar_structures(db_path,
             atoms = row.toatoms()
             if slab_shave_distance:
                 # shaved atoms for speed - increase for better accuracy
-                # TODO: These species should not be hardcoded
-                keep_mask = shave_slab(atoms, threshold=slab_shave_distance, fix=["Ce", "Ti", "O"])[0]
-            atoms_list.append(atoms[keep_mask])
+                species_to_fix = list(set(atoms.get_chemical_symbols()))
+                keep_mask = shave_slab(atoms, threshold=slab_shave_distance, fix=species_to_fix)[0]
+                atoms_list.append(atoms[keep_mask])
+            else:
+                atoms_list.append(atoms)
     
     def process_atoms_to_soap(atoms):
         '''Helper function to save memory in Parallel() output list'''
