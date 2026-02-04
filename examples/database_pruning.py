@@ -14,12 +14,12 @@ def main():
     )
     parser.add_argument(
         "--db-path",
-        default="unique.db", #"codebase/data/prescreened_structures.db",
+        default="scratch/optimized_structures.db", #"codebase/data/prescreened_structures.db",
         help="Input ASE database containing candidate structures.",
     )
     parser.add_argument(
         "--db-out-path",
-        default="unique_combined.db",
+        default="scratch/CuTiO2_unique.db",
         help="Output ASE database that will store unique structures.",
     )
     parser.add_argument(
@@ -35,6 +35,11 @@ def main():
         help="non-zero positive float - weighting between between the best match of local environments and the averaging strategy",
     )
     parser.add_argument(
+        "--support-species",
+        default=["Zn", "Ce", "Ti", "O"],
+        help="List of support species to consider.",
+    )
+    parser.add_argument(
         "--slab-shave-distance",
         type=float,
         default=3,
@@ -48,6 +53,7 @@ def main():
         db_out_path=args.db_out_path,
         similarity_threshold=args.similarity_threshold,
         rematch_alpha=args.rematch_alpha,
+        support_species=["Zn", "Ce", "Ti", "O"],
         slab_shave_distance=args.slab_shave_distance,
     )
 

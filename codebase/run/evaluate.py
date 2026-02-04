@@ -20,6 +20,8 @@ def __init_calc(model=path_to_default_model):
 
     return calc
 
+# TODO: add user input for metal oxide / support slab species
+
 
 def indentify_metal_oxide_atoms(atoms, threshold=1.0, fix=["Ce", "Ti", "O"]):
     '''Identify atoms below a certain z-coordinate threshold, only for specified species'''

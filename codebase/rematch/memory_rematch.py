@@ -36,6 +36,7 @@ def get_soap(atoms):
 
 
 def filter_similar_structures(db_path,
+                              support_species=["Zn", "Ce", "Ti", "O"],
                               slab_shave_distance=3.0,
                               similarity_threshold=0.9999, 
                               kernel_gamma=1.0, 
@@ -53,8 +54,7 @@ def filter_similar_structures(db_path,
             atoms = row.toatoms()
             if slab_shave_distance:
                 # shaved atoms for speed - increase for better accuracy
-                species_to_fix = list(set(atoms.get_chemical_symbols()))
-                keep_mask = shave_slab(atoms, threshold=slab_shave_distance, fix=species_to_fix)[0]
+                keep_mask = shave_slab(atoms, threshold=slab_shave_distance, fix=support_species)[0]
                 atoms_list.append(atoms[keep_mask])
             else:
                 atoms_list.append(atoms)
@@ -113,12 +113,13 @@ def filter_similar_structures(db_path,
 
 
 def get_unique_db(db_path, db_out_path, slab_shave_distance=3.0, 
-                  rematch_alpha=1.0, similarity_threshold=0.9999):
+                  rematch_alpha=1.0, similarity_threshold=0.9999,
+                  support_species=["Zn", "Ce", "Ti", "O"]):
     '''Take a database of Atoms objects and save unique structures
     in a new database'''
 
     keep_indices = filter_similar_structures(
-        db_path, slab_shave_distance=slab_shave_distance, 
+        db_path, support_species=support_species, slab_shave_distance=slab_shave_distance, 
         kernel_alpha=rematch_alpha, similarity_threshold=similarity_threshold
     )
     print(f"Keeping {len(keep_indices)} unique structures.")
